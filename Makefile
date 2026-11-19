@@ -64,7 +64,7 @@ $(GEN): $(LOGO) tools/mkgfx.py
 
 # --- record the songs (on copies: lsdpack's emulator writes the .sav back) ---
 $(W)/songs.s: $(SAVE).gb $(SAVE).sav tools/mknames.py tools/lsdj_drop.py | $(LSDPACK_BIN)
-	rm -rf $(W) && mkdir -p $(W)
+	mkdir -p $(W) && rm -f $(W)/songs.* $(W)/names.*
 	cp "$(SAVE).gb" $(W)/songs.gb
 	python3 -I tools/lsdj_drop.py "$(SAVE).sav" $(W)/songs.sav $(SKIP)
 	python3 -I tools/mknames.py $(W)/songs.sav $(W)/names.asm

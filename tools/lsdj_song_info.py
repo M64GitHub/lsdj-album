@@ -42,9 +42,12 @@ for r in range(257):
     if not filled and start is not None: secs.append((start, r - 1)); start = None
 print("song row sections (hex):", ", ".join(f"{a:02X}-{b:02X}" for a, b in secs) or "none")
 
-# HFF: phrase command H (=7) with value $FF -> chains using that phrase -> song rows using that chain
+# Command ids (LSDj 9.x, alphabetical): 0 none, 1 A, 2 B, 3 C, 4 D, 5 E, 6 F, 7 G, 8 H, 9 K, 10 L, 11 M,
+# 12 O, 13 P, 14 R, 15 S, 16 T, 17 V, 18 W, 19 Z
+CMD_H = 8
+# HFF: phrase command H with value $FF -> chains using that phrase -> song rows using that chain
 hff_phrases = {p for p in range(255) for st in range(16)
-               if s[0x4000 + p*16 + st] == 7 and s[0x4FF0 + p*16 + st] == 0xFF}
+               if s[0x4000 + p*16 + st] == CMD_H and s[0x4FF0 + p*16 + st] == 0xFF}
 hff_chains = {c for c in range(128) for st in range(16) if s[0x2080 + c*16 + st] in hff_phrases}
 hff_rows = sorted({r for r in range(256) for c in range(4) if rows[r][c] in hff_chains})
 print("phrases with HFF:", " ".join(f"{p:02X}" for p in sorted(hff_phrases)) or "none")
@@ -52,5 +55,5 @@ print("song rows reaching an HFF chain:", " ".join(f"{r:02X}" for r in hff_rows)
 
 # HFF can also live in instrument tables (2 command columns, 32 tables x 16 steps)
 hff_tables = sorted({t for t in range(32) for st in range(16) for cmd, val in ((0x3680, 0x3880), (0x3A80, 0x3C80))
-                     if s[cmd + t*16 + st] == 7 and s[val + t*16 + st] == 0xFF})
+                     if s[cmd + t*16 + st] == CMD_H and s[val + t*16 + st] == 0xFF})
 print("tables with HFF:", " ".join(f"{t:02X}" for t in hff_tables) or "none")
