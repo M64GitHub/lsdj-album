@@ -1,0 +1,14 @@
+# Copy to config.mk (ignored by git) and adjust. Command-line values win.
+
+# Your LSDj ROM + save, without extension: songs/lsdj -> songs/lsdj.gb + songs/lsdj.sav
+SAVE  = songs/lsdj
+
+# Song slots to leave out (as numbered by `make songs`), e.g. unfinished ones
+SKIP  =
+
+# Output ROM name and the title in its header (max 16 characters)
+NAME  = album
+TITLE = MY ALBUM
+
+# Logo PNG (scaled to fit 160x56)
+# LOGO = assets/logo.png

@@ -1,0 +1,3 @@
+[submodule "lsdpack"]
+	path = lsdpack
+	url = https://github.com/M64GitHub/lsdpack.git

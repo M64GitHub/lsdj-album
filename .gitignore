@@ -1,0 +1,15 @@
+# build output
+work/
+gen/
+*.gb
+*.gbc
+*.map
+*.sym
+*.o
+tools/gbshot/gbshot
+
+# never commit LSDj ROMs or saves (yours or anyone's)
+*.sav
+
+# local settings
+config.mk
