@@ -53,6 +53,9 @@ the PNGs (or a contact sheet), and check that the audio level is non-zero:
   `08` = +1 (lsdpack's AMP_DEC rule does not catch them with `-d`). VizOnWrite applies the
   zombie rules: old pace 0 → +1, else old dir down → +2; dir flip → 16−v; & 15.
 - lsdpack's emulator writes the .sav back on exit → the Makefile always works on copies.
+- Bumping the lsdpack submodule rebuilds lsdpack and re-records the songs (songs.s depends on
+  the binary, the binary on lsdpack's sources). Verify recordings per song, not just song 1:
+  lsdpack once dropped song 2's first NR10 write (register state carried across songs).
 - LSDj 9.x command ids are alphabetical incl. B: H = 8 (not 7 as in older docs/libs).
   `tools/lsdj_song_info.py` finds HFF in phrases and tables with that.
 - LSDj file names can contain `x` (lowercase) — the font has it.

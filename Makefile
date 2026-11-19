@@ -50,12 +50,15 @@ $(NAME).gb: $(W)/main.o $(W)/player.o $(W)/songs.o $(W)/names.o
 	rgblink -o $@ -m $(NAME).map -n $(NAME).sym $^
 	rgbfix -v -m 0x19 -p 0xFF -t "$(TITLE)" $@
 
-# --- lsdpack (git submodule) ---
+# --- lsdpack (git submodule); rebuilt when its sources change ---
+LSDPACK_SRC := $(wildcard $(LSDPACK)/*.cpp $(LSDPACK)/*.h $(LSDPACK)/rules/*.cpp $(LSDPACK)/rules/*.h \
+                          $(LSDPACK)/libgambatte/src/*.cpp $(LSDPACK)/libgambatte/src/*.h)
 lsdpack: $(LSDPACK_BIN)
-$(LSDPACK_BIN):
+$(LSDPACK_BIN): $(LSDPACK_SRC)
 	@test -f $(LSDPACK)/CMakeLists.txt || { echo "lsdpack missing: run git submodule update --init"; exit 1; }
-	cmake -S $(LSDPACK) -B $(LSDPACK)/build -DCMAKE_BUILD_TYPE=Release
+	test -f $(LSDPACK)/build/CMakeCache.txt || cmake -S $(LSDPACK) -B $(LSDPACK)/build -DCMAKE_BUILD_TYPE=Release
 	cmake --build $(LSDPACK)/build --target lsdpack
+	touch $@
 
 # --- graphics from the logo ---
 $(GEN): $(LOGO) tools/mkgfx.py
@@ -63,7 +66,8 @@ $(GEN): $(LOGO) tools/mkgfx.py
 	python3 -I tools/mkgfx.py "$(LOGO)" gen
 
 # --- record the songs (on copies: lsdpack's emulator writes the .sav back) ---
-$(W)/songs.s: $(SAVE).gb $(SAVE).sav tools/mknames.py tools/lsdj_drop.py | $(LSDPACK_BIN)
+# a new lsdpack records differently, so it re-records too
+$(W)/songs.s: $(SAVE).gb $(SAVE).sav tools/mknames.py tools/lsdj_drop.py $(LSDPACK_BIN)
 	mkdir -p $(W) && rm -f $(W)/songs.* $(W)/names.*
 	cp "$(SAVE).gb" $(W)/songs.gb
 	python3 -I tools/lsdj_drop.py "$(SAVE).sav" $(W)/songs.sav $(SKIP)
